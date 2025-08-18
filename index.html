@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  <style>
+    /* グローバルリセット：パディング・ボーダーを要素サイズに含める */
+    html, body, * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0; /* デフォルト余白を削除 */
+      background-color: #161821;
+      color: #c6c8d1;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    a {
+      color: #89b8c2;
+    }
+
+    ::selection {
+      background-color: #c6c8d1;
+      color: #161821;
+    }
+
+    .profile-wrapper {
+      height: 100vh;       /* ビューポート高さに合わせる */
+      width: 100%;         /* 100vw はスクロール幅の影響で横にはみ出すことがあるので % にする */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box; /* padding を高さに含める */
+    }
+
+    /* profile-wrapper の直下にあるブロック間の余白（横並び時は左右、縦並び時は上下） */
+    .profile-wrapper > div {
+      margin: 0 20px;
+    }
+
+    #bio-icon {
+      width: 200px;
+      height: 200px;
+      max-width: 100%;     /* 小さい画面で画像がはみ出さないようにする */
+      object-fit: cover;   /* アスペクト比を保ちつつ切り抜き */
+      border: 2px solid #c6c8d1;
+      border-radius: 50%;
+      display: block;
+    }
+
+    /* p と ul の余白を小さくして項目間の隙間を詰める */
+    .profile-wrapper p {
+      margin: 0 0 4px 0;
+    }
+
+    .profile-wrapper ul {
+      margin: 4px 0 12px 0;
+      padding-left: 2.2rem;
+    }
+
+    /* スマホ用 */
+    @media (max-width: 600px) {
+      .profile-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .profile-wrapper > div {
+        margin: 10px 0;
+      }
+
+      #bio-icon {
+        width: 150px;
+        height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-wrapper">
+    <!-- アイコン -->
+    <div>
+      <img id="bio-icon" src="./assets/images/bio-photo.jpg">
+    </div>
+    <!-- プロフィール -->
+    <div>
+      <h1 id="bio-name">Ryosei Goto</h1>
+      <div>
+        <p>Affiliation</p>
+        <ul>
+          <li>University of Tsukuba</li>
+        </ul>
+      </div>
+      <div id="bio-description">
+        <p>Interests</p>
+        <ul>
+          <li>Operating System</li>
+          <li>Languages(English, Chinese)</li>
+          <li>Tea</li>
+        </ul>
+      </div>
+      <div>
+        <p>Skills</p>
+        <ul>
+          <li>C#</li>
+          <li>Rust</li>
+          <li>TypeScript</li>
+        </ul>
+      <div>
+        <p>Links</p>
+        <ul>
+          <li><a href="https://x.com/r67018">X</a></li>
+          <li><a href="https://github.com/r67018">GitHub</a></li>
+          <li><a href="https://blog.r67018.com">Blog</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
