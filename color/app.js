@@ -1,6 +1,6 @@
 // 配色の色相差。テトラードは 90° の正方形、ペンタードは 72° の正五角形、ヘクサードは 60° の正六角形。
-const INITIAL_SAT = 70;
-const INITIAL_LIT = 55;
+const INITIAL_SAT = 100;
+const INITIAL_LIT = 50;
 
 const SCHEMES = {
   complementary: {
@@ -146,6 +146,7 @@ function renderMarkers(colors) {
 }
 
 function renderSwatches(colors) {
+  swatches.dataset.count = String(colors.length);
   swatches.replaceChildren();
   colors.forEach((color) => {
     const li = document.createElement("li");

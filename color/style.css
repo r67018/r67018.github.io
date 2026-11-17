@@ -40,7 +40,7 @@ a {
 }
 
 .page {
-  max-width: 980px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
@@ -161,6 +161,13 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-bottom: 18px;
+}
+
+@media (min-width: 761px) {
+  .schemes {
+    flex-wrap: nowrap;
+  }
 }
 
 .schemes button {
@@ -330,13 +337,50 @@ input[type="range"]::-moz-range-thumb {
   border-color: var(--danger);
 }
 
+.swatch-frame {
+  container-type: inline-size;
+  margin-top: 22px;
+}
+
 .swatches {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
-  margin: 22px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* 枚数で割り切れる列数だけ使う。1枚だけ次の行に残さない。 */
+@container (min-width: 280px) {
+  .swatches[data-count="2"],
+  .swatches[data-count="4"],
+  .swatches[data-count="6"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 330px) {
+  .swatches[data-count="3"],
+  .swatches[data-count="6"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 640px) {
+  .swatches[data-count="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .swatches[data-count="5"] {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 900px) {
+  .swatches[data-count="6"] {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 }
 
 .swatch {
@@ -386,6 +430,7 @@ input[type="range"]::-moz-range-thumb {
   color: var(--muted);
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .code {
