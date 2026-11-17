@@ -108,14 +108,32 @@
       outline-offset: 2px;
     }
 
+    .apps > li {
+      min-width: 0;
+    }
+
     .thumb {
+      position: relative;
       display: grid;
       place-items: center;
       aspect-ratio: 16 / 10;
+      overflow: hidden;
       background: #191c28;
       border-bottom: 1px solid var(--line);
       color: var(--muted);
       font-size: 0.75rem;
+    }
+
+    .thumb:not(:has(img))::before {
+      content: "サムネイル";
+    }
+
+    .thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .text {
@@ -154,11 +172,13 @@
     <a class="home" href="../">← 戻る</a>
     <h1>アプリ一覧</h1>
 
-    <!-- アプリを増やすときは、このリストに li を1つ足す -->
+    <!-- 足し方は apps/README.md -->
     <ul class="apps">
       <li>
         <a href="./color/">
-          <span class="thumb" aria-hidden="true">サムネイル</span>
+          <span class="thumb">
+            <img src="./color/thumbnail.webp" alt="配色ツールの画面" width="800" height="500" loading="lazy" decoding="async">
+          </span>
           <span class="text">
             <span class="name">配色</span>
             <span class="desc">メインカラーから、補色や類似色などの配色を作る。</span>
