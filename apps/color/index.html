@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGQV18W8NC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGQV18W8NC');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>配色 | Ryosei Goto</title>
+  <meta name="description" content="メインカラーから補色、類似色、分割補色、トライアド、テトラードの配色を作るツールです。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="page">
+    <a class="home" href="../../">← 戻る</a>
+    <h1>配色</h1>
+    <p class="lead">メインカラーを選ぶと、ルールに沿った色を並べます。色相環で色相、バーで彩度と明度を変えられます。</p>
+
+    <div id="schemes" class="schemes" role="radiogroup" aria-label="配色の種類">
+      <button type="button" role="radio" data-scheme="complementary" aria-checked="true">補色</button>
+      <button type="button" role="radio" data-scheme="analogous" aria-checked="false">類似色</button>
+      <button type="button" role="radio" data-scheme="split" aria-checked="false">分割補色</button>
+      <button type="button" role="radio" data-scheme="triad" aria-checked="false">トライアド</button>
+      <button type="button" role="radio" data-scheme="tetrad" aria-checked="false">テトラード</button>
+      <button type="button" role="radio" data-scheme="pentad" aria-checked="false">ペンタード</button>
+      <button type="button" role="radio" data-scheme="hexad" aria-checked="false">ヘクサード</button>
+    </div>
+
+    <div class="layout">
+      <div class="wheel-col">
+        <div
+          id="wheel"
+          class="wheel"
+          role="slider"
+          tabindex="0"
+          aria-label="色相"
+          aria-valuemin="0"
+          aria-valuemax="360"
+          aria-valuenow="210"
+        >
+          <div class="ring"></div>
+          <div id="hub" class="hub"></div>
+          <div id="markers" class="markers"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <p id="scheme-note" class="note"></p>
+        <p id="angle-readout" class="readout"></p>
+
+        <div class="slider">
+          <div class="slider-label">
+            <label for="sat">彩度</label>
+            <span class="slider-meta">
+              <span id="sat-val">100%</span>
+              <button type="button" id="sat-reset">リセット</button>
+            </span>
+          </div>
+          <input id="sat" type="range" min="0" max="100" step="1" value="100" aria-label="彩度">
+        </div>
+
+        <div class="slider">
+          <div class="slider-label">
+            <label for="lit">明度</label>
+            <span class="slider-meta">
+              <span id="lit-val">50%</span>
+              <button type="button" id="lit-reset">リセット</button>
+            </span>
+          </div>
+          <input id="lit" type="range" min="0" max="100" step="1" value="50" aria-label="明度">
+        </div>
+
+        <label class="hex-field" for="hex">
+          HEX
+          <input id="hex" type="text" inputmode="text" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" maxlength="7" value="#0080FF">
+        </label>
+      </div>
+    </div>
+
+    <div class="swatch-frame">
+      <ul id="swatches" class="swatches"></ul>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./color-math.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
