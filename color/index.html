@@ -52,6 +52,8 @@
           <button type="button" role="radio" data-scheme="split" aria-checked="false">分割補色</button>
           <button type="button" role="radio" data-scheme="triad" aria-checked="false">トライアド</button>
           <button type="button" role="radio" data-scheme="tetrad" aria-checked="false">テトラード</button>
+          <button type="button" role="radio" data-scheme="pentad" aria-checked="false">ペンタード</button>
+          <button type="button" role="radio" data-scheme="hexad" aria-checked="false">ヘクサード</button>
         </div>
         <p id="scheme-note" class="note"></p>
         <p id="angle-readout" class="readout"></p>
@@ -59,7 +61,10 @@
         <div class="slider">
           <div class="slider-label">
             <label for="sat">彩度</label>
-            <span id="sat-val">70%</span>
+            <span class="slider-meta">
+              <span id="sat-val">70%</span>
+              <button type="button" id="sat-reset">リセット</button>
+            </span>
           </div>
           <input id="sat" type="range" min="0" max="100" step="1" value="70" aria-label="彩度">
         </div>
@@ -67,7 +72,10 @@
         <div class="slider">
           <div class="slider-label">
             <label for="lit">明度</label>
-            <span id="lit-val">55%</span>
+            <span class="slider-meta">
+              <span id="lit-val">55%</span>
+              <button type="button" id="lit-reset">リセット</button>
+            </span>
           </div>
           <input id="lit" type="range" min="0" max="100" step="1" value="55" aria-label="明度">
         </div>

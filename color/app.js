@@ -1,4 +1,7 @@
-// 配色の色相差。テトラードは 90° 間隔の正方形（長方形配置ではない）。
+// 配色の色相差。テトラードは 90° の正方形、ペンタードは 72° の正五角形、ヘクサードは 60° の正六角形。
+const INITIAL_SAT = 70;
+const INITIAL_LIT = 55;
+
 const SCHEMES = {
   complementary: {
     label: "補色",
@@ -45,12 +48,35 @@ const SCHEMES = {
       { offset: 270, role: "+270°" },
     ],
   },
+  pentad: {
+    label: "ペンタード",
+    note: "色相環を五等分します。72° 間隔の正五角形、5 色です。",
+    colors: [
+      { offset: 0, role: "メイン" },
+      { offset: 72, role: "+72°" },
+      { offset: 144, role: "+144°" },
+      { offset: 216, role: "+216°" },
+      { offset: 288, role: "+288°" },
+    ],
+  },
+  hexad: {
+    label: "ヘクサード",
+    note: "色相環を六等分します。60° 間隔の正六角形、6 色です。",
+    colors: [
+      { offset: 0, role: "メイン" },
+      { offset: 60, role: "+60°" },
+      { offset: 120, role: "+120°" },
+      { offset: 180, role: "+180°" },
+      { offset: 240, role: "+240°" },
+      { offset: 300, role: "+300°" },
+    ],
+  },
 };
 
 const state = {
   hue: 210,
-  sat: 70,
-  lit: 55,
+  sat: INITIAL_SAT,
+  lit: INITIAL_LIT,
   scheme: "complementary",
 };
 
@@ -64,6 +90,8 @@ const satInput = document.getElementById("sat");
 const litInput = document.getElementById("lit");
 const satVal = document.getElementById("sat-val");
 const litVal = document.getElementById("lit-val");
+const satReset = document.getElementById("sat-reset");
+const litReset = document.getElementById("lit-reset");
 const hexInput = document.getElementById("hex");
 const swatches = document.getElementById("swatches");
 const toast = document.getElementById("toast");
@@ -277,6 +305,16 @@ satInput.addEventListener("input", () => {
 
 litInput.addEventListener("input", () => {
   state.lit = Number(litInput.value);
+  render();
+});
+
+satReset.addEventListener("click", () => {
+  state.sat = INITIAL_SAT;
+  render();
+});
+
+litReset.addEventListener("click", () => {
+  state.lit = INITIAL_LIT;
   render();
 });
 
