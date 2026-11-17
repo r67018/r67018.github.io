@@ -5,4 +5,4 @@
    - 形式は WebP。比率はカードと同じ 16:10。
    - 幅はカードの表示幅の約2倍。目安は 800×500 px。
    - 品質を調整して 100KB 以下にする。
-3. `apps/index.html` の `ul.apps` に `li` を1つ足す。`img` の `src` にサムネイルのパスを書き、`alt`、`width="800"`、`height="500"`、`loading="lazy"` を付ける。画像がないときは `span.thumb` を空にする。空だと「サムネイル」と出る。
+3. `apps/index.html` の `ul.apps` に `li` を1つ足す。サムネイルは `span.thumb` の中の `img`。`src` にパスを書き、`alt`、`width="800"`、`height="500"`、`loading="lazy"` を付ける。画像がないときは `span.thumb` を空にする。空だと「サムネイル」と出る。カードの文字はタイトル（`span.name`）だけにする。説明文は入れない。

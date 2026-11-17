@@ -148,6 +148,7 @@ h1 {
   display: grid;
   gap: 16px;
   min-width: 0;
+  container-type: inline-size;
 }
 
 .schemes {
@@ -200,14 +201,44 @@ h1 {
 
 .note {
   color: var(--muted);
+  /* 配色によって説明の行数が変わっても、色相環が上下にずれないようにする */
+  min-height: 2lh;
 }
 
 .readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, 1.6em);
+  align-items: center;
+  column-gap: 12px;
+  height: calc(3 * 1.6em + 22px);
   padding: 10px 12px;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
   font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.readout-item {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* 説明がどの配色でも1行に収まる幅では、余白の行を残さない */
+@container (min-width: 26rem) {
+  .note {
+    min-height: 1lh;
+  }
+}
+
+/* 6色ぶんの枠を最初から確保する。角度や配色が変わっても行数は動かない */
+@container (min-width: 34rem) {
+  .readout {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 1.6em);
+    height: calc(2 * 1.6em + 22px);
+  }
 }
 
 .slider {
@@ -344,8 +375,9 @@ input[type="range"]::-moz-range-thumb {
   list-style: none;
 }
 
-/* 枚数で割り切れる列数だけ使う。1枚だけ次の行に残さない。 */
-@container (min-width: 280px) {
+/* 枚数で割り切れる列数だけ使う。1枚だけ次の行に残さない。
+   hsl() が1行で読める幅になるまで列を増やさない。 */
+@container (min-width: 300px) {
   .swatches[data-count="2"],
   .swatches[data-count="4"],
   .swatches[data-count="6"] {
@@ -353,24 +385,26 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-@container (min-width: 330px) {
+@container (min-width: 520px) {
   .swatches[data-count="3"],
   .swatches[data-count="6"] {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@container (min-width: 640px) {
+@container (min-width: 680px) {
   .swatches[data-count="4"] {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
 
+@container (min-width: 860px) {
   .swatches[data-count="5"] {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 
-@container (min-width: 900px) {
+@container (min-width: 1000px) {
   .swatches[data-count="6"] {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
@@ -388,6 +422,7 @@ input[type="range"]::-moz-range-thumb {
   font: inherit;
   text-align: left;
   cursor: pointer;
+  container-type: inline-size;
 }
 
 .swatch:hover {
@@ -414,21 +449,45 @@ input[type="range"]::-moz-range-thumb {
   padding: 10px 12px 12px;
 }
 
+.role,
+.deg,
+.hsl,
+.code {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .role {
-  font-size: 0.8rem;
+  font-size: min(0.8rem, calc((100cqi - 26px) / 14));
+  line-height: 1.4;
+  height: 1.4em;
 }
 
 .deg,
 .hsl {
   color: var(--muted);
-  font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
+}
+
+.deg {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  height: 1.4em;
+}
+
+/* いちばん長い hsl(359.9, 100%, 100%) が、どのカード幅でも1行に収まる。
+   行の高さは固定して、文字の中身でカードの高さが変わらないようにする。 */
+.hsl {
+  font-size: min(0.75rem, calc((100cqi - 26px) / 14));
+  line-height: 1.4;
+  height: 1.4em;
 }
 
 .code {
-  font-size: 1rem;
+  font-size: min(1rem, calc((100cqi - 26px) / 8));
   letter-spacing: 0.03em;
+  line-height: 1.25;
+  height: 1.25em;
 }
 
 .toast {

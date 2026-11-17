@@ -106,6 +106,19 @@ function formatNum(n) {
   return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 }
 
+// 桁が変わると折り返し位置が動き、行の高さがガタつく。色相は常に小数1桁・5桁、百分率は3桁にそろえる。
+const FIGURE_SPACE = "\u2007";
+
+function formatHueText(h) {
+  let value = Math.round(normalizeHue(h) * 10) / 10;
+  if (value >= 360) value = 0;
+  return value.toFixed(1).padStart(5, FIGURE_SPACE);
+}
+
+function formatPctText(n) {
+  return `${String(Math.round(n)).padStart(3, FIGURE_SPACE)}%`;
+}
+
 function currentColors() {
   const scheme = SCHEMES[state.scheme];
   return scheme.colors.map((item) => {
@@ -171,7 +184,7 @@ function renderSwatches(colors) {
 
     const deg = document.createElement("span");
     deg.className = "deg";
-    deg.textContent = `色相 ${formatNum(color.hue)}°`;
+    deg.textContent = `色相 ${formatHueText(color.hue)}°`;
 
     const code = document.createElement("span");
     code.className = "code";
@@ -179,7 +192,7 @@ function renderSwatches(colors) {
 
     const hsl = document.createElement("span");
     hsl.className = "hsl";
-    hsl.textContent = `hsl(${formatNum(color.hue)}, ${formatNum(state.sat)}%, ${formatNum(state.lit)}%)`;
+    hsl.textContent = `hsl(${formatHueText(color.hue)}, ${formatPctText(state.sat)}, ${formatPctText(state.lit)})`;
 
     body.append(role, deg, code, hsl);
     btn.append(chip, body);
@@ -193,12 +206,18 @@ function renderSwatches(colors) {
 }
 
 function renderAngleReadout(colors) {
-  const parts = colors.map((color) => {
-    if (color.offset === 0) return `メイン ${formatNum(color.hue)}°`;
-    const sign = color.offset > 0 ? "+" : "−";
-    return `${sign}${Math.abs(color.offset)}° → ${formatNum(color.hue)}°`;
-  });
-  angleReadout.textContent = parts.join("  /  ");
+  angleReadout.replaceChildren();
+  for (const color of colors) {
+    const item = document.createElement("span");
+    item.className = "readout-item";
+    if (color.offset === 0) {
+      item.textContent = `メイン ${formatHueText(color.hue)}°`;
+    } else {
+      const sign = color.offset > 0 ? "+" : "−";
+      item.textContent = `${sign}${Math.abs(color.offset)}° → ${formatHueText(color.hue)}°`;
+    }
+    angleReadout.append(item);
+  }
 }
 
 function render({ keepHex = false } = {}) {
@@ -232,7 +251,7 @@ function render({ keepHex = false } = {}) {
   hexInput.classList.remove("invalid");
 
   wheel.setAttribute("aria-valuenow", String(Math.round(state.hue)));
-  wheel.setAttribute("aria-valuetext", `色相 ${formatNum(state.hue)}度`);
+  wheel.setAttribute("aria-valuetext", `色相 ${formatHueText(state.hue).trim()}度`);
 }
 
 function setHueFromPointer(e) {
