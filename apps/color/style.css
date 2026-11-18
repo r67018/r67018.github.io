@@ -121,7 +121,7 @@ h1 {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid #f4f5f8;
+  border: 2px solid var(--text-bright);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55);
   transform: translate(-50%, -50%);
 }
@@ -303,7 +303,7 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: -6px;
   border-radius: 50%;
   border: 2px solid var(--bg);
-  background: #e8eaf2;
+  background: var(--text-bright);
 }
 
 input[type="range"]::-moz-range-track {
@@ -318,7 +318,7 @@ input[type="range"]::-moz-range-thumb {
   height: 22px;
   border-radius: 50%;
   border: 2px solid var(--bg);
-  background: #e8eaf2;
+  background: var(--text-bright);
 }
 
 .hex-field {

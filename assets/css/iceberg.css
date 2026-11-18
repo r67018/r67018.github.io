@@ -1,14 +1,14 @@
 :root {
-  /* cocopon/iceberg palette */
+  /* cocopon/iceberg dark palette */
+  --iceberg-bg-dark: #0f1117;
   --iceberg-bg: #161821;
-  --iceberg-bg-alt: #191c28;
   --iceberg-panel: #1e2132;
-  --iceberg-line: #34384c;
-  --iceberg-fg: #c6c8d1;
+  --iceberg-line: #3e445e;
   --iceberg-muted: #6b7089;
+  --iceberg-fg: #c6c8d1;
+  --iceberg-fg-bright: #d2d4de;
   --iceberg-red: #e27878;
   --iceberg-orange: #e2a478;
-  --iceberg-yellow: #e4aa80;
   --iceberg-green: #b4be82;
   --iceberg-cyan: #89b8c2;
   --iceberg-blue: #84a0c6;
@@ -16,10 +16,11 @@
 
   /* Semantic aliases */
   --bg: var(--iceberg-bg);
-  --bg-alt: var(--iceberg-bg-alt);
+  --bg-alt: var(--iceberg-bg-dark);
   --panel: var(--iceberg-panel);
   --line: var(--iceberg-line);
   --text: var(--iceberg-fg);
+  --text-bright: var(--iceberg-fg-bright);
   --muted: var(--iceberg-muted);
   --accent: var(--iceberg-cyan);
   --danger: var(--iceberg-red);
