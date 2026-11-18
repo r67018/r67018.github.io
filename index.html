@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/iceberg.css">
 
   <style>
     html, body, * {
@@ -26,18 +27,18 @@
 
     body {
       margin: 0;
-      background-color: #161821;
-      color: #c6c8d1;
+      background-color: var(--bg);
+      color: var(--text);
       font-family: "JetBrains Mono", monospace;
     }
 
     a {
-      color: #89b8c2;
+      color: var(--accent);
     }
 
     ::selection {
-      background-color: #c6c8d1;
-      color: #161821;
+      background-color: var(--text);
+      color: var(--bg);
     }
 
     .profile-wrapper {
@@ -60,7 +61,7 @@
       height: 200px;
       max-width: 100%;     /* 小さい画面で画像がはみ出さないようにする */
       object-fit: cover;   /* アスペクト比を保ちつつ切り抜き */
-      border: 2px solid #c6c8d1;
+      border: 2px solid var(--text);
       border-radius: 50%;
       display: block;
     }

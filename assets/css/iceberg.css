@@ -1,0 +1,28 @@
+:root {
+  /* cocopon/iceberg palette */
+  --iceberg-bg: #161821;
+  --iceberg-bg-alt: #191c28;
+  --iceberg-panel: #1e2132;
+  --iceberg-line: #34384c;
+  --iceberg-fg: #c6c8d1;
+  --iceberg-muted: #6b7089;
+  --iceberg-red: #e27878;
+  --iceberg-orange: #e2a478;
+  --iceberg-yellow: #e4aa80;
+  --iceberg-green: #b4be82;
+  --iceberg-cyan: #89b8c2;
+  --iceberg-blue: #84a0c6;
+  --iceberg-purple: #a093c7;
+
+  /* Semantic aliases */
+  --bg: var(--iceberg-bg);
+  --bg-alt: var(--iceberg-bg-alt);
+  --panel: var(--iceberg-panel);
+  --line: var(--iceberg-line);
+  --text: var(--iceberg-fg);
+  --muted: var(--iceberg-muted);
+  --accent: var(--iceberg-cyan);
+  --danger: var(--iceberg-red);
+
+  color-scheme: dark;
+}

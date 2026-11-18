@@ -1,14 +1,3 @@
-:root {
-  --bg: #161821;
-  --panel: #1e2132;
-  --line: #34384c;
-  --text: #c6c8d1;
-  --muted: #6b7089;
-  --accent: #89b8c2;
-  --danger: #e27878;
-  color-scheme: dark;
-}
-
 * {
   box-sizing: border-box;
 }
