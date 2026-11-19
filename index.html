@@ -270,6 +270,32 @@
       text-decoration: none;
     }
 
+    /* 画面最下部のカラーパレット出典 */
+    .site-credit {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: max(14px, env(safe-area-inset-bottom));
+      z-index: 2;
+      padding: 0 16px;
+      text-align: center;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--iceberg-muted);
+      pointer-events: none;
+    }
+
+    .site-credit a {
+      color: var(--iceberg-line);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      pointer-events: auto;
+    }
+
+    .site-credit a:hover {
+      color: var(--bg);
+    }
+
     /* スマホ用 */
     @media (max-width: 768px) {
       :root {
@@ -316,6 +342,11 @@
 
       .snow-ground {
         top: calc(82% + 30px);
+      }
+
+      .site-credit {
+        bottom: max(10px, env(safe-area-inset-bottom));
+        font-size: 0.7rem;
       }
     }
 
@@ -563,6 +594,10 @@
       </span>
     </span>
   </button>
+
+  <footer class="site-credit">
+    Colors from <a href="https://cocopon.me/works/iceberg/">Iceberg</a> by cocopon
+  </footer>
 
   <script>
     const bioFlip = document.getElementById("bio-flip");
