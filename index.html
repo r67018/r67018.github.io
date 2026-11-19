@@ -29,7 +29,7 @@
       /* 通常文字サイズ（写真サイズ4倍の基準） */
       --text-size: clamp(0.875rem, 1.05vw, 1rem);
 
-      /* 暗い夜空領域の高さ（地面上端と一致） */
+      /* 暗い夜空領域の高さ（フォールバック） */
       --sky-height: calc(61.8034vh + 40px);
 
       /* 薪（Icebergに調和させた茶色系ドット色） */
@@ -47,6 +47,12 @@
       --flame-core: #efc092;
     }
 
+    @supports (height: 100dvh) {
+      :root {
+        --sky-height: calc(61.8034dvh + 40px);
+      }
+    }
+
     html, body, * {
       box-sizing: border-box;
     }
@@ -54,6 +60,7 @@
     body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       background-color: var(--bg);
       color: var(--text);
       font-family: "JetBrains Mono", monospace;
@@ -69,13 +76,13 @@
       color: var(--bg);
     }
 
-    /* 一直線に平らな白い地面 */
+    /* 一直線に平らな白い地面（焚き火と同じ % 基準） */
     .snow-ground {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      top: var(--sky-height);
+      top: calc(var(--phi-2) + 40px);
       background-color: var(--ground-fill);
       border-top: 4px solid var(--ground-top);
       pointer-events: none;
@@ -270,8 +277,14 @@
         --sky-height: calc(82vh + 30px);
       }
 
+      @supports (height: 100dvh) {
+        :root {
+          --sky-height: calc(82dvh + 30px);
+        }
+      }
+
       .profile-wrapper {
-        padding: 32px 24px;
+        padding: 28px 24px 88px;
       }
 
       .profile-text {
@@ -299,6 +312,10 @@
         top: 82%;
         width: 120px;
         height: 120px;
+      }
+
+      .snow-ground {
+        top: calc(82% + 30px);
       }
     }
 
