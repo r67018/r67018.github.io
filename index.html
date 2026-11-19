@@ -21,15 +21,37 @@
   <link rel="stylesheet" href="./assets/css/iceberg.css">
 
   <style>
+    :root {
+      /* 黄金比グリッド分割位置 */
+      --phi-1: 38.1966%;
+      --phi-2: 61.8034%;
+
+      /* 薪（Icebergに調和させた茶色系ドット色） */
+      --wood-outline: #2a1b15;
+      --wood-dark: #462e23;
+      --wood-mid: #694736;
+      --wood-light: #8a604a;
+      --wood-cut: #ad7e63;
+
+      /* 雪面・炎のドット色 */
+      --ground-top: #eef0f7;
+      --ground-fill: #dfe2ec;
+      --ground-shadow: #b8bdd0;
+      --flame-red-deep: #c95f5f;
+      --flame-core: #efc092;
+    }
+
     html, body, * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
+      min-height: 100vh;
       background-color: var(--bg);
       color: var(--text);
       font-family: "JetBrains Mono", monospace;
+      overflow-x: hidden;
     }
 
     a {
@@ -41,39 +63,130 @@
       color: var(--bg);
     }
 
-    .profile-wrapper {
-      height: 100vh;       /* ビューポート高さに合わせる */
-      width: 100%;         /* 100vw はスクロール幅の影響で横にはみ出すことがあるので % にする */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      box-sizing: border-box; /* padding を高さに含める */
+    /* 一直線に平らな白い地面 */
+    .snow-ground {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: calc(var(--phi-2) + 40px);
+      background-color: var(--ground-fill);
+      border-top: 4px solid var(--ground-top);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    /* profile-wrapper の直下にあるブロック間の余白（横並び時は左右、縦並び時は上下） */
-    .profile-wrapper > div {
-      margin: 0 30px;
+    /* 黄金比グリッド右下交点（61.8034%, 61.8034%）に配置したドット絵の焚き火 */
+    .campfire-container {
+      position: fixed;
+      left: var(--phi-2);
+      top: var(--phi-2);
+      width: 160px;
+      height: 160px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .campfire-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* パチパチと控えめに切り替わる3コマアニメーション（2 FPS） */
+    .flame-frame-1 {
+      opacity: 1;
+      animation: flame-f1 1.5s steps(1, end) infinite;
+    }
+
+    .flame-frame-2 {
+      opacity: 0;
+      animation: flame-f2 1.5s steps(1, end) infinite;
+    }
+
+    .flame-frame-3 {
+      opacity: 0;
+      animation: flame-f3 1.5s steps(1, end) infinite;
+    }
+
+    @keyframes flame-f1 {
+      0% { opacity: 1; }
+      33.333% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes flame-f2 {
+      0% { opacity: 0; }
+      33.333% { opacity: 1; }
+      66.666% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes flame-f3 {
+      0% { opacity: 0; }
+      66.666% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* 降雪キャンバス（ピクセルドット） */
+    #snow-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* 左上寄せの自己紹介 */
+    .profile-wrapper {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: clamp(20px, 3vw, 32px);
+      padding: clamp(24px, 4vh, 42px) clamp(24px, 4.5vw, 52px);
+      box-sizing: border-box;
+    }
+
+    .profile-text {
+      max-width: min(440px, 50vw);
+      font-size: clamp(0.84rem, 1.05vw, 0.95rem);
+      line-height: 1.45;
     }
 
     #bio-icon {
-      width: 200px;
-      height: 200px;
-      max-width: 100%;     /* 小さい画面で画像がはみ出さないようにする */
-      object-fit: cover;   /* アスペクト比を保ちつつ切り抜き */
+      width: clamp(96px, 14vw, 132px);
+      height: clamp(96px, 14vw, 132px);
+      max-width: 100%;
+      object-fit: cover;
       border: 2px solid var(--text);
       border-radius: 50%;
       display: block;
+      flex-shrink: 0;
     }
 
-    /* p と ul の余白を小さくして項目間の隙間を詰める */
+    #bio-name {
+      margin: 0 0 12px 0;
+      font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+      line-height: 1.2;
+      color: var(--text-bright);
+    }
+
+    /* p と ul の余白を詰めてコンパクトに保つ */
     .profile-wrapper p {
-      margin: 0 0 4px 0;
+      margin: 0 0 2px 0;
     }
 
     .profile-wrapper ul {
-      margin: 4px 0 12px 0;
-      padding-left: 2.4rem;
+      margin: 2px 0 9px 0;
+      padding-left: 2.1rem;
     }
 
     .profile-wrapper li {
@@ -81,34 +194,223 @@
     }
 
     /* スマホ用 */
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .profile-wrapper {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 14px;
+        padding: 22px 22px 180px;
       }
 
-      .profile-wrapper > div {
-        margin: 0;
+      .profile-text {
+        max-width: 100%;
+        font-size: 0.86rem;
       }
 
       #bio-name {
-        text-align: center;
-        margin: 40px 0;
+        text-align: left;
+        margin: 0 0 10px 0;
+        font-size: 1.38rem;
       }
 
       #bio-icon {
-        width: 150px;
-        height: 150px;
+        width: 92px;
+        height: 92px;
+      }
+
+      .campfire-container {
+        left: var(--phi-2);
+        top: 82%;
+        width: 120px;
+        height: 120px;
+      }
+
+      .snow-ground {
+        top: calc(82% + 30px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .flame-frame-1 {
+        animation: none;
+        opacity: 1;
+      }
+
+      .flame-frame-2,
+      .flame-frame-3 {
+        animation: none;
+        opacity: 0;
       }
     }
   </style>
 </head>
 <body>
+  <!-- 一直線に平らな白い地面 -->
+  <div class="snow-ground" aria-hidden="true"></div>
+
+  <!-- 黄金比グリッド右下の交点に配置されたピクセルアートの焚き火 -->
+  <div class="campfire-container" aria-hidden="true">
+    <svg class="campfire-svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+      <!-- 白い地面の上のドット影と僅かな照り返し（y=24..25） -->
+      <rect x="7" y="24" width="18" height="1" fill="#b8bdd0" />
+      <rect x="13" y="24" width="6" height="1" fill="#d9b5ae" />
+      <rect x="9" y="25" width="14" height="1" fill="#c8cde0" />
+
+      <!-- 奥の薪（左右後ろ） -->
+      <rect x="8" y="18" width="4" height="1" fill="#694736" />
+      <rect x="7" y="19" width="6" height="1" fill="#462e23" />
+      <rect x="20" y="18" width="4" height="1" fill="#694736" />
+      <rect x="19" y="19" width="6" height="1" fill="#462e23" />
+
+      <!-- 炎（赤とオレンジの3コマ・ピクセルアニメーション） -->
+      <g class="flame-frame-1">
+        <!-- 外側・赤 -->
+        <rect x="15" y="6" width="1" height="1" fill="#e27878" />
+        <rect x="15" y="7" width="2" height="1" fill="#e27878" />
+        <rect x="14" y="8" width="3" height="1" fill="#e27878" />
+        <rect x="13" y="9" width="5" height="1" fill="#e27878" />
+        <rect x="12" y="10" width="7" height="1" fill="#e27878" />
+        <rect x="12" y="11" width="8" height="1" fill="#e27878" />
+        <rect x="10" y="12" width="1" height="1" fill="#c95f5f" />
+        <rect x="11" y="12" width="9" height="1" fill="#e27878" />
+        <rect x="11" y="13" width="9" height="1" fill="#e27878" />
+        <rect x="10" y="14" width="12" height="1" fill="#e27878" />
+        <rect x="10" y="15" width="12" height="1" fill="#e27878" />
+        <rect x="10" y="16" width="12" height="1" fill="#e27878" />
+        <rect x="11" y="17" width="10" height="1" fill="#c95f5f" />
+        <rect x="12" y="18" width="8" height="1" fill="#c95f5f" />
+        <rect x="13" y="19" width="6" height="1" fill="#c95f5f" />
+        <!-- 内側・オレンジ -->
+        <rect x="15" y="10" width="1" height="1" fill="#e2a478" />
+        <rect x="14" y="11" width="3" height="1" fill="#e2a478" />
+        <rect x="13" y="12" width="5" height="1" fill="#e2a478" />
+        <rect x="13" y="13" width="6" height="1" fill="#e2a478" />
+        <rect x="12" y="14" width="8" height="1" fill="#e2a478" />
+        <rect x="12" y="15" width="8" height="1" fill="#e2a478" />
+        <rect x="12" y="16" width="8" height="1" fill="#e2a478" />
+        <rect x="13" y="17" width="6" height="1" fill="#e2a478" />
+        <rect x="14" y="18" width="4" height="1" fill="#e2a478" />
+        <!-- 中心・明オレンジ -->
+        <rect x="15" y="14" width="2" height="1" fill="#efc092" />
+        <rect x="14" y="15" width="4" height="2" fill="#efc092" />
+        <rect x="15" y="17" width="2" height="1" fill="#efc092" />
+        <!-- 控えめな火の粉ドット -->
+        <rect x="19" y="6" width="1" height="1" fill="#e2a478" />
+      </g>
+
+      <g class="flame-frame-2">
+        <!-- 外側・赤 -->
+        <rect x="16" y="5" width="1" height="1" fill="#e27878" />
+        <rect x="15" y="6" width="2" height="1" fill="#e27878" />
+        <rect x="15" y="7" width="3" height="1" fill="#e27878" />
+        <rect x="14" y="8" width="4" height="1" fill="#e27878" />
+        <rect x="13" y="9" width="6" height="1" fill="#e27878" />
+        <rect x="11" y="10" width="1" height="1" fill="#c95f5f" />
+        <rect x="13" y="10" width="7" height="1" fill="#e27878" />
+        <rect x="11" y="11" width="9" height="1" fill="#e27878" />
+        <rect x="11" y="12" width="9" height="1" fill="#e27878" />
+        <rect x="11" y="13" width="10" height="1" fill="#e27878" />
+        <rect x="10" y="14" width="12" height="1" fill="#e27878" />
+        <rect x="10" y="15" width="12" height="1" fill="#e27878" />
+        <rect x="10" y="16" width="12" height="1" fill="#e27878" />
+        <rect x="11" y="17" width="10" height="1" fill="#c95f5f" />
+        <rect x="12" y="18" width="8" height="1" fill="#c95f5f" />
+        <rect x="13" y="19" width="6" height="1" fill="#c95f5f" />
+        <!-- 内側・オレンジ -->
+        <rect x="15" y="9" width="1" height="1" fill="#e2a478" />
+        <rect x="15" y="10" width="2" height="1" fill="#e2a478" />
+        <rect x="14" y="11" width="4" height="1" fill="#e2a478" />
+        <rect x="13" y="12" width="6" height="2" fill="#e2a478" />
+        <rect x="12" y="14" width="8" height="3" fill="#e2a478" />
+        <rect x="13" y="17" width="6" height="1" fill="#e2a478" />
+        <rect x="14" y="18" width="4" height="1" fill="#e2a478" />
+        <!-- 中心・明オレンジ -->
+        <rect x="15" y="13" width="1" height="1" fill="#efc092" />
+        <rect x="14" y="14" width="3" height="1" fill="#efc092" />
+        <rect x="14" y="15" width="4" height="2" fill="#efc092" />
+        <rect x="15" y="17" width="2" height="1" fill="#efc092" />
+        <!-- 控えめな火の粉ドット -->
+        <rect x="12" y="6" width="1" height="1" fill="#e27878" />
+        <rect x="20" y="4" width="1" height="1" fill="#e2a478" />
+      </g>
+
+      <g class="flame-frame-3">
+        <!-- 外側・赤 -->
+        <rect x="14" y="6" width="1" height="1" fill="#e27878" />
+        <rect x="14" y="7" width="2" height="1" fill="#e27878" />
+        <rect x="13" y="8" width="4" height="1" fill="#e27878" />
+        <rect x="13" y="9" width="5" height="1" fill="#e27878" />
+        <rect x="12" y="10" width="7" height="1" fill="#e27878" />
+        <rect x="20" y="10" width="1" height="1" fill="#c95f5f" />
+        <rect x="11" y="11" width="10" height="1" fill="#e27878" />
+        <rect x="11" y="12" width="9" height="1" fill="#e27878" />
+        <rect x="10" y="13" width="11" height="1" fill="#e27878" />
+        <rect x="10" y="14" width="12" height="1" fill="#e27878" />
+        <rect x="10" y="15" width="12" height="1" fill="#e27878" />
+        <rect x="10" y="16" width="12" height="1" fill="#e27878" />
+        <rect x="11" y="17" width="10" height="1" fill="#c95f5f" />
+        <rect x="12" y="18" width="8" height="1" fill="#c95f5f" />
+        <rect x="13" y="19" width="6" height="1" fill="#c95f5f" />
+        <!-- 内側・オレンジ -->
+        <rect x="14" y="10" width="2" height="1" fill="#e2a478" />
+        <rect x="13" y="11" width="4" height="1" fill="#e2a478" />
+        <rect x="13" y="12" width="5" height="1" fill="#e2a478" />
+        <rect x="12" y="13" width="7" height="1" fill="#e2a478" />
+        <rect x="12" y="14" width="8" height="3" fill="#e2a478" />
+        <rect x="13" y="17" width="6" height="1" fill="#e2a478" />
+        <rect x="14" y="18" width="4" height="1" fill="#e2a478" />
+        <!-- 中心・明オレンジ -->
+        <rect x="14" y="14" width="3" height="1" fill="#efc092" />
+        <rect x="14" y="15" width="4" height="2" fill="#efc092" />
+        <rect x="15" y="17" width="2" height="1" fill="#efc092" />
+        <!-- 控えめな火の粉ドット -->
+        <rect x="21" y="7" width="1" height="1" fill="#e2a478" />
+      </g>
+
+      <!-- 薪の間の熾火（おきび）ドット -->
+      <rect x="14" y="19" width="1" height="1" fill="#e2a478" />
+      <rect x="15" y="19" width="2" height="1" fill="#efc092" />
+      <rect x="17" y="19" width="1" height="1" fill="#e27878" />
+
+      <!-- 左斜めの太い薪 -->
+      <rect x="5" y="20" width="2" height="3" fill="#ad7e63" />
+      <rect x="6" y="21" width="1" height="1" fill="#694736" />
+      <rect x="7" y="19" width="6" height="1" fill="#8a604a" />
+      <rect x="13" y="19" width="2" height="1" fill="#694736" />
+      <rect x="7" y="20" width="7" height="1" fill="#694736" />
+      <rect x="14" y="20" width="2" height="1" fill="#c95f5f" />
+      <rect x="7" y="21" width="7" height="1" fill="#462e23" />
+      <rect x="6" y="22" width="5" height="1" fill="#2a1b15" />
+
+      <!-- 右斜めの太い薪（中央で重なる） -->
+      <rect x="25" y="20" width="2" height="3" fill="#ad7e63" />
+      <rect x="25" y="21" width="1" height="1" fill="#694736" />
+      <rect x="19" y="19" width="6" height="1" fill="#8a604a" />
+      <rect x="17" y="19" width="2" height="1" fill="#694736" />
+      <rect x="18" y="20" width="7" height="1" fill="#694736" />
+      <rect x="16" y="20" width="2" height="1" fill="#c95f5f" />
+      <rect x="18" y="21" width="7" height="1" fill="#462e23" />
+      <rect x="21" y="22" width="5" height="1" fill="#2a1b15" />
+
+      <!-- 手前中央の横たわる太い薪（地面に接地） -->
+      <rect x="8" y="21" width="2" height="3" fill="#ad7e63" />
+      <rect x="8" y="22" width="1" height="1" fill="#694736" />
+      <rect x="10" y="21" width="13" height="1" fill="#8a604a" />
+      <rect x="13" y="21" width="6" height="1" fill="#a6684f" />
+      <rect x="10" y="22" width="14" height="1" fill="#694736" />
+      <rect x="9" y="23" width="15" height="1" fill="#2a1b15" />
+      <rect x="23" y="21" width="1" height="2" fill="#462e23" />
+    </svg>
+  </div>
+
+  <!-- ゆっくり降るピクセルの雪 -->
+  <canvas id="snow-canvas" aria-hidden="true"></canvas>
+
+  <!-- 左上に寄せた自己紹介 -->
   <div class="profile-wrapper">
-    <div>
-      <img id="bio-icon" src="./assets/images/bio-photo.jpg">
-    </div>
-    <div>
+    <img id="bio-icon" src="./assets/images/bio-photo.jpg" alt="Ryosei Goto">
+    <div class="profile-text">
       <h1 id="bio-name">Ryosei Goto</h1>
       <div>
         <p>Affiliation</p>
@@ -133,6 +435,7 @@
           <li>Rust</li>
           <li>TypeScript</li>
         </ul>
+      </div>
       <div>
         <p>Links</p>
         <ul>
@@ -145,6 +448,7 @@
         <p>Contact</p>
         <ul>
           <li id="x"></li>
+          <li><a href="./pgp/">PGP Key</a></li>
         </ul>
       </div>
     </div>
@@ -154,6 +458,114 @@
     const user = "contact";
     const domain = "r67018.com";
     document.getElementById("x").innerHTML = `${user}[at]${domain}`;
+
+    (() => {
+      const canvas = document.getElementById("snow-canvas");
+      const groundEl = document.querySelector(".snow-ground");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let width = 0;
+      let height = 0;
+      let groundTop = 0;
+      let flakes = [];
+      let lastStep = 0;
+      const stepMs = 83; // 約12 FPSで控えめに落下
+
+      function updateGroundTop() {
+        groundTop = groundEl ? groundEl.getBoundingClientRect().top : height;
+      }
+
+      function createFlake(randomY) {
+        const size = Math.random() > 0.45 ? 3 : 4;
+        const maxSpawnY = Math.max(40, groundTop - size);
+        return {
+          x: Math.random() * width,
+          y: randomY ? Math.random() * maxSpawnY : -size,
+          size,
+          vy: 0.9 + Math.random() * 0.9,
+          swayAmp: Math.random() * 0.18,
+          swayFreq: 0.0005 + Math.random() * 0.0007,
+          phase: Math.random() * Math.PI * 2,
+          alpha: 0.4 + Math.random() * 0.45,
+          tint: Math.random() > 0.3 ? "238, 240, 247" : "210, 212, 222"
+        };
+      }
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        updateGroundTop();
+
+        const targetCount = Math.min(36, Math.max(20, Math.floor((width * height) / 36000)));
+        if (flakes.length === 0) {
+          flakes = Array.from({ length: targetCount }, () => createFlake(true));
+        } else if (flakes.length < targetCount) {
+          while (flakes.length < targetCount) flakes.push(createFlake(true));
+        } else if (flakes.length > targetCount) {
+          flakes.length = targetCount;
+        }
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+        for (let i = 0; i < flakes.length; i++) {
+          const f = flakes[i];
+          const px = Math.round(f.x);
+          const py = Math.round(f.y);
+          ctx.fillStyle = `rgba(${f.tint}, ${f.alpha})`;
+          ctx.fillRect(px, py, f.size, f.size);
+        }
+      }
+
+      function tick(now) {
+        if (!lastStep) {
+          lastStep = now;
+          render();
+        }
+
+        if (!reducedMotion && now - lastStep >= stepMs) {
+          lastStep = now;
+          updateGroundTop();
+
+          for (let i = 0; i < flakes.length; i++) {
+            const f = flakes[i];
+            f.y += f.vy;
+            f.x += Math.sin(now * f.swayFreq + f.phase) * f.swayAmp;
+
+            if (f.y + f.size >= groundTop) {
+              f.y = -f.size;
+              f.x = Math.random() * width;
+            }
+            if (f.x > width) {
+              f.x = -f.size;
+            } else if (f.x + f.size < 0) {
+              f.x = width;
+            }
+          }
+
+          render();
+        }
+
+        if (!reducedMotion) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          lastStep = 0;
+        }
+      });
+      requestAnimationFrame(tick);
+    })();
   </script>
 </body>
 </html>
