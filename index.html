@@ -193,6 +193,24 @@
       list-style-type: "- ";
     }
 
+    .email-copy {
+      appearance: none;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      color: inherit;
+      font: inherit;
+      line-height: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .email-copy:hover {
+      color: inherit;
+      text-decoration: none;
+    }
+
     /* スマホ用 */
     @media (max-width: 768px) {
       .profile-wrapper {
@@ -457,7 +475,59 @@
   <script>
     const user = "contact";
     const domain = "r67018.com";
-    document.getElementById("x").innerHTML = `${user}[at]${domain}`;
+    const displayEmail = `${user}[at]${domain}`;
+    const actualEmail = `${user}@${domain}`;
+
+    const emailItem = document.getElementById("x");
+    const emailBtn = document.createElement("button");
+    emailBtn.type = "button";
+    emailBtn.className = "email-copy";
+    emailBtn.setAttribute("aria-label", "Copy email address");
+    emailBtn.textContent = displayEmail;
+    emailItem.appendChild(emailBtn);
+
+    let emailResetTimer = null;
+
+    function fallbackCopyEmail(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      if (!ok) {
+        throw new Error("Copy command failed");
+      }
+    }
+
+    function showEmailCopied() {
+      emailBtn.textContent = "Copied!";
+      clearTimeout(emailResetTimer);
+      emailResetTimer = setTimeout(() => {
+        emailBtn.textContent = displayEmail;
+      }, 1500);
+    }
+
+    emailBtn.addEventListener("click", async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(actualEmail);
+        } else {
+          fallbackCopyEmail(actualEmail);
+        }
+        showEmailCopied();
+      } catch {
+        try {
+          fallbackCopyEmail(actualEmail);
+          showEmailCopied();
+        } catch {
+          // 失敗時は表示を変えない
+        }
+      }
+    });
 
     (() => {
       const canvas = document.getElementById("snow-canvas");
