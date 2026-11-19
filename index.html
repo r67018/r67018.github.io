@@ -179,17 +179,59 @@
       margin-bottom: 0;
     }
 
-    #bio-icon {
+    .bio-flip {
       position: fixed;
       top: clamp(24px, 4vh, 40px);
       right: clamp(24px, 4vw, 48px);
-      z-index: 4;
+      z-index: 2;
       width: calc(var(--text-size) * 4);
       height: calc(var(--text-size) * 4);
-      object-fit: cover;
-      border: 2px solid var(--text);
+      padding: 0;
+      border: none;
+      background: transparent;
       border-radius: 50%;
+      cursor: pointer;
+      perspective: 400px;
+    }
+
+    .bio-flip-inner {
+      position: relative;
       display: block;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bio-flip.is-flipped .bio-flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .bio-flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    .bio-flip-front {
+      background-color: var(--bg);
+      transform: rotateY(0deg);
+    }
+
+    .bio-flip-back {
+      transform: rotateY(180deg);
+      overflow: hidden;
+      border: 2px solid var(--text);
+    }
+
+    #bio-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 50%;
     }
 
     #bio-name {
@@ -251,7 +293,7 @@
         row-gap: 4px;
       }
 
-      #bio-icon {
+      .bio-flip {
         top: 20px;
         right: 20px;
       }
@@ -271,6 +313,10 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      .bio-flip-inner {
+        transition: none;
+      }
+
       .flame-frame-1 {
         animation: none;
         opacity: 1;
@@ -446,9 +492,6 @@
   <!-- ゆっくり降るピクセルの雪 -->
   <canvas id="snow-canvas" aria-hidden="true"></canvas>
 
-  <!-- 画面右上のプロフィール写真 -->
-  <img id="bio-icon" src="./assets/images/bio-photo.jpg" alt="Ryosei Goto">
-
   <!-- 水平中央配置の自己紹介 -->
   <div class="profile-wrapper">
     <div class="profile-text">
@@ -501,7 +544,29 @@
     </div>
   </div>
 
+  <!-- 画面右上のフリップ式プロフィール写真 -->
+  <button
+    type="button"
+    class="bio-flip"
+    id="bio-flip"
+    aria-pressed="false"
+    aria-label="Toggle profile photo"
+  >
+    <span class="bio-flip-inner">
+      <span class="bio-flip-face bio-flip-front" aria-hidden="true"></span>
+      <span class="bio-flip-face bio-flip-back">
+        <img id="bio-icon" src="./assets/images/bio-photo.jpg" alt="Ryosei Goto">
+      </span>
+    </span>
+  </button>
+
   <script>
+    const bioFlip = document.getElementById("bio-flip");
+    bioFlip.addEventListener("click", () => {
+      const flipped = bioFlip.classList.toggle("is-flipped");
+      bioFlip.setAttribute("aria-pressed", String(flipped));
+    });
+
     const user = "contact";
     const domain = "r67018.com";
     const displayEmail = `${user}[at]${domain}`;
