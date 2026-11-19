@@ -26,6 +26,12 @@
       --phi-1: 38.1966%;
       --phi-2: 61.8034%;
 
+      /* 通常文字サイズ（写真サイズ4倍の基準） */
+      --text-size: clamp(0.875rem, 1.05vw, 1rem);
+
+      /* 暗い夜空領域の高さ（地面上端と一致） */
+      --sky-height: calc(61.8034vh + 40px);
+
       /* 薪（Icebergに調和させた茶色系ドット色） */
       --wood-outline: #2a1b15;
       --wood-dark: #462e23;
@@ -69,7 +75,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      top: calc(var(--phi-2) + 40px);
+      top: var(--sky-height);
       background-color: var(--ground-fill);
       border-top: 4px solid var(--ground-top);
       pointer-events: none;
@@ -141,40 +147,54 @@
       z-index: 3;
     }
 
-    /* 左上寄せの自己紹介 */
+    /* 黒い背景領域の中央配置（水平・垂直） */
     .profile-wrapper {
       position: relative;
       z-index: 2;
-      min-height: 100vh;
+      min-height: var(--sky-height);
       width: 100%;
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: clamp(20px, 3vw, 32px);
-      padding: clamp(24px, 4vh, 42px) clamp(24px, 4.5vw, 52px);
+      align-items: center;
+      justify-content: center;
+      padding: 32px clamp(24px, 4vw, 48px);
       box-sizing: border-box;
     }
 
     .profile-text {
-      max-width: min(440px, 50vw);
-      font-size: clamp(0.84rem, 1.05vw, 0.95rem);
+      width: min(640px, 100%);
+      max-width: 100%;
+      font-size: var(--text-size);
       line-height: 1.45;
     }
 
+    .profile-columns {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      column-gap: clamp(24px, 3.5vw, 48px);
+      align-items: start;
+    }
+
+    .profile-col-left > div:last-child ul,
+    .profile-col-right > div:last-child ul {
+      margin-bottom: 0;
+    }
+
     #bio-icon {
-      width: clamp(96px, 14vw, 132px);
-      height: clamp(96px, 14vw, 132px);
-      max-width: 100%;
+      position: fixed;
+      top: clamp(24px, 4vh, 40px);
+      right: clamp(24px, 4vw, 48px);
+      z-index: 4;
+      width: calc(var(--text-size) * 4);
+      height: calc(var(--text-size) * 4);
       object-fit: cover;
       border: 2px solid var(--text);
       border-radius: 50%;
       display: block;
-      flex-shrink: 0;
     }
 
     #bio-name {
-      margin: 0 0 12px 0;
-      font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+      margin: 0 0 clamp(14px, 2vh, 22px) 0;
+      font-size: clamp(1.25rem, min(2vw, 2.6vh), 1.6rem);
       line-height: 1.2;
       color: var(--text-bright);
     }
@@ -185,7 +205,7 @@
     }
 
     .profile-wrapper ul {
-      margin: 2px 0 9px 0;
+      margin: 2px 0 clamp(6px, 1vh, 10px) 0;
       padding-left: 2.1rem;
     }
 
@@ -213,28 +233,33 @@
 
     /* スマホ用 */
     @media (max-width: 768px) {
+      :root {
+        --text-size: 0.875rem;
+        --sky-height: calc(82vh + 30px);
+      }
+
       .profile-wrapper {
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 14px;
-        padding: 22px 22px 180px;
+        padding: 32px 24px;
       }
 
       .profile-text {
-        max-width: 100%;
-        font-size: 0.86rem;
+        width: 100%;
+      }
+
+      .profile-columns {
+        grid-template-columns: 1fr;
+        row-gap: 4px;
+      }
+
+      #bio-icon {
+        top: 20px;
+        right: 20px;
       }
 
       #bio-name {
         text-align: left;
-        margin: 0 0 10px 0;
+        margin: 0 0 14px 0;
         font-size: 1.38rem;
-      }
-
-      #bio-icon {
-        width: 92px;
-        height: 92px;
       }
 
       .campfire-container {
@@ -242,10 +267,6 @@
         top: 82%;
         width: 120px;
         height: 120px;
-      }
-
-      .snow-ground {
-        top: calc(82% + 30px);
       }
     }
 
@@ -425,49 +446,57 @@
   <!-- ゆっくり降るピクセルの雪 -->
   <canvas id="snow-canvas" aria-hidden="true"></canvas>
 
-  <!-- 左上に寄せた自己紹介 -->
+  <!-- 画面右上のプロフィール写真 -->
+  <img id="bio-icon" src="./assets/images/bio-photo.jpg" alt="Ryosei Goto">
+
+  <!-- 水平中央配置の自己紹介 -->
   <div class="profile-wrapper">
-    <img id="bio-icon" src="./assets/images/bio-photo.jpg" alt="Ryosei Goto">
     <div class="profile-text">
       <h1 id="bio-name">Ryosei Goto</h1>
-      <div>
-        <p>Affiliation</p>
-        <ul>
-          <li>University of Tsukuba</li>
-          The College of Media Arts, Science and Technology
-        </ul>
-      </div>
-      <div id="bio-description">
-        <p>Interests</p>
-        <ul>
-          <li>Operating System</li>
-          <li>Compiler</li>
-          <li>Languages(English, Chinese)</li>
-          <li>Tea</li>
-        </ul>
-      </div>
-      <div>
-        <p>Skills</p>
-        <ul>
-          <li>C#</li>
-          <li>Rust</li>
-          <li>TypeScript</li>
-        </ul>
-      </div>
-      <div>
-        <p>Links</p>
-        <ul>
-          <li><a href="https://github.com/r67018">GitHub</a></li>
-          <li><a href="https://blog.r67018.com">Blog</a></li>
-          <li><a href="./apps/">Apps</a></li>
-        </ul>
-      </div>
-      <div>
-        <p>Contact</p>
-        <ul>
-          <li id="x"></li>
-          <li><a href="./pgp/">PGP Key</a></li>
-        </ul>
+      <div class="profile-columns">
+        <div class="profile-col-left">
+          <div>
+            <p>Affiliation</p>
+            <ul>
+              <li>University of Tsukuba</li>
+              The College of Media Arts, Science and Technology
+            </ul>
+          </div>
+          <div id="bio-description">
+            <p>Interests</p>
+            <ul>
+              <li>Operating System</li>
+              <li>Compiler</li>
+              <li>Languages(English, Chinese)</li>
+              <li>Tea</li>
+            </ul>
+          </div>
+        </div>
+        <div class="profile-col-right">
+          <div>
+            <p>Skills</p>
+            <ul>
+              <li>C#</li>
+              <li>Rust</li>
+              <li>TypeScript</li>
+            </ul>
+          </div>
+          <div>
+            <p>Links</p>
+            <ul>
+              <li><a href="https://github.com/r67018">GitHub</a></li>
+              <li><a href="https://blog.r67018.com">Blog</a></li>
+              <li><a href="./apps/">Apps</a></li>
+            </ul>
+          </div>
+          <div>
+            <p>Contact</p>
+            <ul>
+              <li id="x"></li>
+              <li><a href="./pgp/">PGP Key</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
